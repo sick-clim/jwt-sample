@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 
-	"./auth"
-
 	"github.com/gorilla/mux"
 	"github.com/sick-clim/jwt-sample/auth"
 )
@@ -21,7 +19,7 @@ func main() {
 	r := mux.NewRouter()
 	// public でハンドラーを実行
 	r.Handle("/public", public)
-	r.Handle("/private", auth.JwtMiddleware.Handle(private))
+	r.Handle("/private", auth.JwtMiddleware.Handler(private))
 	r.Handle("/auth", auth.GetTokenHandler)
 
 	if err := http.ListenAndServe(":8070", r); err != nil {
@@ -35,7 +33,7 @@ var private = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		Tag:   "Go",
 		URL:   "https://qiita.com/po3rin/items/bf439424e38757c1e69b",
 	}
-	json.NweEncoder(w).Encode(post)
+	json.NewEncoder(w).Encode(post)
 })
 
 var public = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
